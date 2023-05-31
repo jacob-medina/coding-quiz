@@ -56,6 +56,18 @@ section {
     text-align: center;
 }
 
+#leaderboard {
+    display: none;
+}
+
+#leaderboard .container {
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    overflow-y: auto;
+    border: 5px solid var(--dark);
+}
+
 .fade-in {
     animation-duration: 0.5s;
     animation-timing-function: ease;
@@ -96,7 +108,8 @@ section {
     font-size: 150%;
 }
 
-button {
+button,
+input[type="submit"] {
     margin: 20px;
     padding: 10px;
     background-color: var(--contrast);
@@ -178,6 +191,11 @@ footer {
     position: absolute;
     bottom: 20px;
     text-align: center;
+}
+
+#btn-clear-leaderboard {
+    display: none;
+    margin: 20px auto;
 }
 
 footer a {

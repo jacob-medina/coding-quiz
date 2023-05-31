@@ -76,6 +76,16 @@ const questions = [
     "It can allow a user to use a site without a network connection.")
 ];
 
+class LeaderboardEntry {
+    constructor(initials, score) {
+        this.initials = initials;
+        this.score = score;
+    }
+}
+
+// leaderboard of everyone's scores
+var leaderboard = [];
+
 // holds all sound effects
 var sounds = {
     whistle: new Audio("./assets/sounds/whistle.mp3"),
@@ -89,7 +99,7 @@ var sounds = {
     }
 }
 
-const maxTime = 60;
+const maxTime = 5;
 var timeLeft = maxTime;
 var countdownInterval;
 const penaltyTime = 4;
@@ -105,6 +115,8 @@ var availableQuestions;
 var startSection = document.getElementById("start");
 var quizSection = document.getElementById("quiz");
 var endSection = document.getElementById("end");
+var leaderboardSection = document.getElementById("leaderboard");
+var leaderboardForm = document.querySelector("#leaderboard form")
 
 var startButton = document.getElementById('btn-start');
 var footer = document.querySelector("footer");
@@ -126,7 +138,6 @@ function hideElement(element) {
 function showElement(element) {
     element.style.display = "block";
 }
-
 
 
 function removeAllChildElements(parent) {
@@ -248,6 +259,57 @@ function incorrectAnswer(event) {
 }
 
 
+function getStorageLeaderboard() {
+    var storageLeaderboard = JSON.parse(localStorage.getItem("leaderboard"));
+    if (storageLeaderboard !== null) {
+        storageLeaderboard.sort((a, b) => b.score - a.score);
+    }
+   
+    return storageLeaderboard;
+}
+
+
+// synchronizes leaderboard object and localStorage leaderboard
+function addToLeaderboard(entry) {
+    const storageLeaderboard = getStorageLeaderboard();
+    leaderboard = [];
+    
+    // if there are entries in localStorage
+    if (storageLeaderboard !== null) {
+        leaderboard = storageLeaderboard;
+    }
+
+    // add current entry to leaderboard
+    leaderboard.push(entry);
+
+    // sort leaderboard by score, highest to lowest
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    // update localStorage
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+    
+}
+
+
+function generateLeaderboardSection() {
+    // clear leaderboard
+    var leaderboardContainer = document.querySelector("#leaderboard .container");
+    removeAllChildElements(leaderboardContainer);
+
+    const storageLeaderboard = getStorageLeaderboard();
+
+    if (storageLeaderboard === null) { return null; }
+
+    // add leaderboard entires
+    for (entry of storageLeaderboard) {
+        var entryElement = document.createElement('p');
+        entryElement.innerHTML = entry.initials + " - " + entry.score;
+        leaderboardContainer.appendChild(entryElement);
+    }
+
+}
+
+
 function endQuiz() {
     playing = false;
     stopCountdown();
@@ -291,7 +353,14 @@ function endQuiz() {
     endSection.appendChild(tryAgainButton);
 
     // show footer
+    showElement(document.getElementById("btn-clear-leaderboard"));
     showElement(footer);
+
+    // set up leaderboard
+    // addToLeaderboard(new LeaderboardEntry("JIM", 40));
+    generateLeaderboardSection();
+    showElement(leaderboardForm);
+    showElement(leaderboardSection);
 }
 
 
@@ -362,8 +431,9 @@ function startQuiz() {
     numCorrectAnswers = 0;
     totalPoints = 0;
 
-    // hide start menu and footer
+    // hide start menu, leaderboard, and footer
     hideElement(startSection);
+    hideElement(leaderboardSection);
     hideElement(footer);
 
     // delete anything from end section
@@ -387,4 +457,33 @@ startButton.addEventListener("click", startQuiz);
 // once page has loaded
 window.onload = (event) => {
     timeText.innerHTML = maxTime;
+
+    // set up functionality for clear leaderboard button
+    var clearLeaderboardButton = document.getElementById("btn-clear-leaderboard");
+    clearLeaderboardButton.addEventListener("click", 
+        function() {
+            var confirmed = confirm("Are you sure you want to clear the leaderboard?"+ "\n" + "This action cannot be undone.");
+            if (!confirmed) { return; }
+
+            localStorage.clear();
+            generateLeaderboardSection();
+
+    })
+
+    // set up functionality for leaderboard submit button
+    leaderboardForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        // get and add data to leaderboard
+        var initials = document.getElementById("initials").value;
+        if (initials === "") { initials = "___"; }
+        initials = initials.toUpperCase();
+        addToLeaderboard(new LeaderboardEntry(initials, totalPoints));
+
+        // regenerate leaderboard
+        generateLeaderboardSection();
+
+        // hide the form
+        hideElement(leaderboardForm);
+    })
 }
