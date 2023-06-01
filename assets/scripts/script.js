@@ -155,7 +155,7 @@ const questions = [
     'Both are x and y are equal in value only.',
     'Both are not same at all.'),
     new Question('Which line of code correctly check if the variable "a" is not equal the "NULL"',
-    'if (a !== null',
+    'if (a !== null)',
     'if (!a)',
     'if (a ! null)',
     'if (a != null)')
@@ -289,7 +289,6 @@ function nextQuestion() {
     quizSection.addEventListener("animationend",
     // wait for fade animation to end to create next question
     (event) => {
-        console.log(event.animationName);
         if (event.animationName !== "fadeOutRight") { return; }
         canAnswer = true;
 
@@ -406,36 +405,35 @@ function generateLeaderboardSection() {
 
     const storageLeaderboard = getStorageLeaderboard();
 
-    if (storageLeaderboard === null) { return null; }
+    if (storageLeaderboard !== null) {
+        // add leaderboard entires
+        var i = 0;
+        for (entry of storageLeaderboard) {
+            // create entry
+            var tableRow = document.createElement('tr');
+            var placeElement = document.createElement('td');
+            var initialsElement = document.createElement('td');
+            var scoreElement = document.createElement('td');
 
-    // add leaderboard entires
-    var i = 0;
-    for (entry of storageLeaderboard) {
-        // create entry
-        var tableRow = document.createElement('tr');
-        var placeElement = document.createElement('td');
-        var initialsElement = document.createElement('td');
-        var scoreElement = document.createElement('td');
+            // create entry text
+            const place = i + 1;
+            placeElement.textContent = `${place}${getPlaceSuffix(place)}`;
+            placeElement.style.width = "20%";
+            initialsElement.textContent = entry.initials;
+            initialsElement.style.fontWeight = "600";
+            scoreElement.textContent = entry.score;
 
-        // create entry text
-        const place = i + 1;
-        placeElement.textContent = `${place}${getPlaceSuffix(place)}`;
-        placeElement.style.width = "20%";
-        initialsElement.textContent = entry.initials;
-        initialsElement.style.fontWeight = "600";
-        scoreElement.textContent = entry.score;
+            // add entry to leaderboard
+            tableRow.appendChild(placeElement);
+            tableRow.appendChild(initialsElement);
+            tableRow.appendChild(scoreElement);
+            leaderboardTable.appendChild(tableRow);
 
-        // add entry to leaderboard
-        tableRow.appendChild(placeElement);
-        tableRow.appendChild(initialsElement);
-        tableRow.appendChild(scoreElement);
-        leaderboardTable.appendChild(tableRow);
-
-        i++;
+            i++;
+        }
     }
 
     // fill in up to 10 total spots with empty lines
-    console.log(leaderboardTable.children);
     while (leaderboardTable.children.length < 10) {
         var emptyEntryElement = document.createElement('tr');
         emptyEntryElement.innerHTML = "<td></td><td>- - -</td><td></td>"
