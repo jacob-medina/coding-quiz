@@ -88,18 +88,19 @@ var leaderboard = [];
 
 // holds all sound effects
 var sounds = {
+    volumeOn: true,
     whistle: new Audio("./assets/sounds/whistle.mp3"),
     tick: new Audio("./assets/sounds/tick.mp3"),
     correct: new Audio("./assets/sounds/correct.mp3"),
     incorrect:  new Audio("./assets/sounds/incorrect.mp3"),
 
     play: function(soundName) {
-        if (this[soundName] === undefined) { return; }
+        if (this[soundName] === undefined || !this.volumeOn) { return; }
         this[soundName].play();
     }
 }
 
-const maxTime = 5;
+const maxTime = 1;
 var timeLeft = maxTime;
 var countdownInterval;
 const penaltyTime = 4;
@@ -150,7 +151,7 @@ function removeAllChildElements(parent) {
 function countDown() {
     // reduce time left and update display
     timeLeft--;
-    timeText.innerHTML = timeLeft;
+    timeText.textContent = timeLeft;
 
     // check time to end quiz or warn of ending
     if (timeLeft <= 0) {
@@ -291,22 +292,67 @@ function addToLeaderboard(entry) {
 }
 
 
+function getPlaceSuffix(place) {
+    if (place >= 11 && place <= 19) {
+        return "th";
+    }
+    else if (place % 10 === 1) {
+        return "st"
+    }
+    else if (place % 10 === 2) {
+        return "nd"
+    }
+    else if (place % 10 === 3) {
+        return "rd"
+    }
+    else {
+        return "th";
+    }
+}
+
+
 function generateLeaderboardSection() {
     // clear leaderboard
-    var leaderboardContainer = document.querySelector("#leaderboard .container");
-    removeAllChildElements(leaderboardContainer);
+    var leaderboardTable = document.querySelector("#leaderboard table");
+    removeAllChildElements(leaderboardTable);
 
     const storageLeaderboard = getStorageLeaderboard();
 
     if (storageLeaderboard === null) { return null; }
 
     // add leaderboard entires
+    var i = 0;
     for (entry of storageLeaderboard) {
-        var entryElement = document.createElement('p');
-        entryElement.innerHTML = entry.initials + " - " + entry.score;
-        leaderboardContainer.appendChild(entryElement);
+        // create entry
+        var tableRow = document.createElement('tr');
+        var placeElement = document.createElement('td');
+        var initialsElement = document.createElement('td');
+        var scoreElement = document.createElement('td');
+
+        // create entry text
+        const place = i + 1;
+        placeElement.textContent = `${place}${getPlaceSuffix(place)}`;
+        placeElement.style.width = "20%";
+        initialsElement.textContent = entry.initials;
+        initialsElement.style.fontWeight = "600";
+        scoreElement.textContent = entry.score;
+
+        // add entry to leaderboard
+        tableRow.appendChild(placeElement);
+        tableRow.appendChild(initialsElement);
+        tableRow.appendChild(scoreElement);
+        leaderboardTable.appendChild(tableRow);
+
+        i++;
     }
 
+    // fill in up to 10 total spots with empty lines
+    console.log(leaderboardTable.children);
+    while (leaderboardTable.children.length < 10) {
+        var emptyEntryElement = document.createElement('tr');
+        emptyEntryElement.innerHTML = "<td></td><td>- - -</td><td></td>"
+        leaderboardTable.appendChild(emptyEntryElement);
+    }
 }
 
 
@@ -458,6 +504,22 @@ startButton.addEventListener("click", startQuiz);
 window.onload = (event) => {
     timeText.innerHTML = maxTime;
 
+    // set initial volume preference from localStorage
+    var volumeButton = document.getElementById("btn-volume");
+
+    if (localStorage.getItem("volumeOn") !== null) {
+        sounds.volumeOn = localStorage.getItem("volumeOn").toLowerCase() === "true";
+        volumeButton.innerHTML = sounds.volumeOn ? "volume_up" : "volume_off";
+    }
+
+    // set up functionality for volume button
+    volumeButton.addEventListener("click",
+        function() {
+            sounds.volumeOn = !sounds.volumeOn;
+            volumeButton.innerHTML = sounds.volumeOn ? "volume_up" : "volume_off";
+            localStorage.setItem("volumeOn", sounds.volumeOn.toString());
+        })
+
     // set up functionality for clear leaderboard button
     var clearLeaderboardButton = document.getElementById("btn-clear-leaderboard");
     clearLeaderboardButton.addEventListener("click", 
@@ -467,6 +529,8 @@ window.onload = (event) => {
 
             localStorage.clear();
             generateLeaderboardSection();
+
+            localStorage.setItem("volumeOn", sounds.volumeOn.toString());
 
     })
 
@@ -485,5 +549,5 @@ window.onload = (event) => {
 
         // hide the form
         hideElement(leaderboardForm);
-    })
+    });
 }

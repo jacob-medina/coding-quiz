@@ -22,6 +22,23 @@ body {
 header {
     display: flex;
     justify-content: flex-end;
+    padding: 0 20px;
+}
+
+.justify-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.align-center {
+    display: flex;
+    align-items: center;
+}
+
+.flex-column-then-row {
+    display: flex;
+    flex-direction: column;
 }
 
 .underline {
@@ -50,6 +67,14 @@ header {
     color: var(--warning);
 }
 
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+
 section {
     width: 90%;
     margin: auto;
@@ -58,14 +83,51 @@ section {
 
 #leaderboard {
     display: none;
+    /* margin-top: 20px; */
 }
 
 #leaderboard .container {
     width: 200px;
-    height: 200px;
+    height: 400px;
     margin: auto;
     overflow-y: auto;
     border: 5px solid var(--dark);
+    border-radius: var(--border-radius);
+}
+
+#leaderboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#leaderboard td,
+#leaderboard th {
+    /* border: 1px solid var(--dark); */
+    text-align: left;
+    padding: 20px 10px;
+}
+/* #leaderboard .container p {
+    height: 35px;
+    display: block;
+    margin: 0 auto;
+    line-height: 35px;
+    text-align: start;
+} */
+
+#leaderboard .container tr:nth-child(even) {
+    background-color: rgba(0,0,0, 0.05);
+}
+
+#leaderboard form p {
+    margin-bottom: 0;
+}
+
+#leaderbord form input[type="submit"] {
+    margin: 10px 20px;
+}
+
+#initials {
+    height: min-content;
 }
 
 .fade-in {
@@ -188,8 +250,7 @@ input[type="submit"] {
 
 footer {
     width: 100%;
-    position: absolute;
-    bottom: 20px;
+    margin-top: 100px;
     text-align: center;
 }
 
@@ -202,11 +263,34 @@ footer a {
     text-decoration: none;
 }
 
+#btn-volume {
+    margin: auto;
+    margin-left: 0;
+    padding: 0;
+    /* padding-left: 20px; */
+    font-size: 150%;
+    height: min-content;
+    background-color: transparent;
+}
+
 
 /* MEDIA QUERIES */
 @media screen and (min-width: 800px) {
     section {
         width: 75%;
+    }
+
+    
+}
+
+@media screen and (min-width: 1000px) {
+    .flex-column-then-row {
+        flex-direction: row;
+    }
+
+    footer {
+        position: fixed;
+        bottom: 10px;
     }
 }
 

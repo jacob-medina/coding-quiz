@@ -7,6 +7,7 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
@@ -17,13 +18,14 @@
     <body>
         <!-- Header -->
         <header>
+            <button id="btn-volume" class="material-symbols-outlined">volume_up</button>
             <p class="time-limit underline">Time Left: <span id="time"></span></p>
         </header>
 
         <!-- Main content -->
         <main>
             <section id="start">
-                <h1>Coding Quiz!</h1>
+                <h1>JavaScript Coding Quiz!</h1>
                 <p>
                     Answer as many questions as you can within the time limit.
                 </p>
@@ -35,18 +37,34 @@
 
             <section id="quiz"></section>
 
-            <section id="end"></section>
+            <div class="justify-center flex-column-then-row">
 
-            <section id="leaderboard">
-                <div class="container"></div>
-                <form>
-                    <p>Submit your score to the leaderboard!</p>
-                    <!-- <label for="initials">Initials</label> -->
-                    <input type="text" id="initials" name="initials" placeholder="Initials" maxlength="3" minlength="1" size="10">
-                    <input type="submit">
-                </form>
-                
-            </section>
+                <section id="end"></section>
+
+                <section id="leaderboard">
+                    <p>Leaderboard</p>
+                    <div class="container">
+                        <table>
+                            <tr>
+                                <th>Place</th>
+                                <th>Initials</th>
+                                <th>Points</th>
+                            </tr>
+                        </table>
+                        
+                    </div>
+                    <form>
+                        <p>Submit your score to the leaderboard!</p>
+                        <div class="justify-center align-center">
+                            <input type="text" id="initials" name="initials" placeholder="Initials" maxlength="3" minlength="1" size="10">
+                            <input type="submit">
+                        </div>
+                        
+                    </form>
+                    
+                </section>
+
+            </div>
 
         </main>
 
