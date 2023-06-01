@@ -73,7 +73,92 @@ const questions = [
     "It is best practice to use client-side storage to store sensitive information, like a user's payment information.",
     "It allows us to store the contents of a user's shopping cart from a previous session.",
     "We can use it to remember a user's preferences.",
-    "It can allow a user to use a site without a network connection.")
+    "It can allow a user to use a site without a network connection."),
+    new Question("Inside the HTML document, where do you place your JavaScript code?",
+    'Inside the script element',
+    'Inside the link element',
+    'In the footer element',
+    'Inside the head element'),
+    new Question('What operator is used to assign a value to a declared variable?',
+    'Equal sign (=)',
+    'Double-equal (==)',
+    'Question mark (?)',
+    'Colon (:)'),
+    new Question('What are the six primitive data types in JavaScript?',
+    'string, number, boolean, bigInt, symbol, undefined',
+    'sentence, int, truthy, bigInt, symbol, undefined',
+    'sentence, float, data, bigInt, symbol, undefined',
+    'string, num, falsy, bigInt, symbol, undefined'),
+    new Question('How do we declare a conditional statement in JavaScript?',
+    'if...else',
+    'while loop',
+    'for loop',
+    'difference...between'),
+    new Question("From the given array which index is the letter 'b' on? ['a', 'b', 'c', 'd']",
+    '1',
+    '0',
+    '2',
+    '3'),
+    new Question('How do we stop a loop from from repeating indefinitely?',
+    'A loop will stop executing when the condition is false.',
+    'We have to explicitly end the loop with the break keyword.',
+    'A loop will stop executing when the condition is true.',
+    'When we have iterated through half of the condition.'),
+    new Question('Which statement is NOT true about functions in JavaScript?',
+    'A function must always be assigned an identifier',
+    'Functions are able to be recursive.',
+    'Functions can receive arguments that can alter the output of a function',
+    'Functions can be reused throughout your code'),
+    new Question('What are the two types of scope JavaScript uses?',
+    'Global and Local',
+    'Surrounding and Inner',
+    'Outside and Inside',
+    'Abroad and Local'),
+    new Question("Which array methods remove the last element of an array and add a new element to the beginning of an array?",
+    'pop() and unshift()',
+    'forEach() and pop()',
+    'concat() and shift()',
+    'push() and sort()'),
+    new Question("How do we access a value stored in an object?",
+    'Dot notation, Bracket notation',
+    'Equal notation, Abstract notation',
+    'Dot notation, Curl bracket notation',
+    'Period notation, Square bracket notation'),
+    new Question('What is an object method?',
+    'A function associated with an object',
+    'An array saved inside of an object',
+    'Keys in an object that have a number assigned to it',
+    'A function that takes an object for an argument'),
+    new Question("What is the purpose of the 'This' operator?",
+    "The keyword 'This' refers to the object it is in. 'This' changes based on which object it is in when being called.",
+    "'This' keyword lets us make a reference to our window gives us access to special object methods.",
+    "'This' is an array where we can easily store global variables for when we need access to them.",
+    "'This' keyword allows us to specify certain variables to it which can be used in the global scope."),
+    new Question("We create a new branch off of our main branch with  'git branch test-branch'. How do we switch to our newly created branch?",
+    'git checkout test-branch',
+    'git change test branch',
+    'git commit test-branch',
+    'git merge test-branch'),
+    new Question("Which statement is NOT true about JavaScript?",
+    'JavaScripts handles numbers better than most programming languages.',
+    'JavaScript increases interactivity of our websites.',
+    'JavaScript lets provide the user immediate feedback upon an action.',
+    'Javascript allows developers to create richer interfaces for the users.'),
+    new Question("Which of the following variables takes precedence over the others if the names are the same?",
+    'The local element',
+    'Global variable',
+    'Both global and local elements',
+    'None'),
+    new Question("x === y implies that:",
+    'Both are equal in the value and data type.',
+    'Both x and y are equal in value, type and reference address as well.',
+    'Both are x and y are equal in value only.',
+    'Both are not same at all.'),
+    new Question('Which line of code correctly check if the variable "a" is not equal the "NULL"',
+    'if (a !== null',
+    'if (!a)',
+    'if (a ! null)',
+    'if (a != null)')
 ];
 
 class LeaderboardEntry {
@@ -100,7 +185,7 @@ var sounds = {
     }
 }
 
-const maxTime = 1;
+const maxTime = 120;
 var timeLeft = maxTime;
 var countdownInterval;
 const penaltyTime = 4;
@@ -204,6 +289,7 @@ function nextQuestion() {
     quizSection.addEventListener("animationend",
     // wait for fade animation to end to create next question
     (event) => {
+        console.log(event.animationName);
         if (event.animationName !== "fadeOutRight") { return; }
         canAnswer = true;
 
@@ -251,8 +337,10 @@ function incorrectAnswer(event) {
 
     // display penalty timer bar
     var penaltyTimerBar = document.createElement('div');
-    penaltyTimerBar.style.animationDuration = (penaltyTime - 0.01) + "s";
+    penaltyTimerBar.style.animationDuration = penaltyTime + "s";
     penaltyTimerBar.classList.add('penalty-timer-bar');
+    // stop timer bar from propagating animationend event
+    penaltyTimerBar.addEventListener('animationend', (event) => {event.stopPropagation();})
     quizSection.appendChild(penaltyTimerBar);
 
     // delay the start of the next question
